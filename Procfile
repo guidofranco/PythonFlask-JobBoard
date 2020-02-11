@@ -1,1 +1,1 @@
-web: gunicorn jobs:app --log-file -
+web: gunicorn jobs.app:app --log-file -
