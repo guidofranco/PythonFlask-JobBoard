@@ -1,25 +1,19 @@
 import datetime
 import os
-
+from urllib.parse import urlparse
 import psycopg2
 import psycopg2.extras
 from flask import Flask, g, redirect, render_template, request, url_for
 
-DB_NAME = os.environ["DB_NAME"]
-DB_USER = os.environ["DB_USER"]
-DB_USER_PSWD = os.environ["DB_USER_PSWD"]
-DB_HOST = os.environ["DB_HOST"]
-DB_PORT = os.environ["DB_PORT"]
+url = urlparse(os.environ.get('DATABASE_URL'))
+db = f'dbname={url.path[1:]} user={url.username} password={url.password} host={url.hostname}'
 
 app = Flask(__name__)
 
 def open_connection():
     connection = getattr(g, '_connection', None)
     if connection is None:
-        connection = g._connection = psycopg2.connect(
-                                        dbname=DB_NAME, user=DB_USER,
-                                        password=DB_USER_PSWD,
-                                        host=DB_HOST, port=DB_PORT)
+        connection = g._connection = psycopg2.connect(db)
     return connection
 
 
